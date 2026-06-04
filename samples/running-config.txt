@@ -1,0 +1,29 @@
+hostname TEST-Router
+
+security passwords min-length 8
+login block-for 120 attempts 3 within 60
+
+enable secret 5 $1$mERr$OSspVDKdDcSbol7vzHaH3.
+
+username admin secret 0 $1$mERr$OSspVDKdDcSbol7vzHaH3.
+
+username kisec password 7 082A455D0C1A544541
+username kisec2 password 0 kisec123
+username kisec2 password 0 kisec123
+username test password 1 082A455D0C1A544541
+username kisec3 privilege 15 secret 5 $1$mERr$OSspVDKdDcSbol7vzHaH3.
+line console 0
+ login local
+ exec-timeout 5 0
+
+privilege exec level 15 connect
+privilege exec level 15 telnet
+
+privilege exec level 15 show ip access-list
+privilege exec level 15 show logging
+
+line vty 0 4
+ transport input ssh
+
+line aux 0
+ no exec
