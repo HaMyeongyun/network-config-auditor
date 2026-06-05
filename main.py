@@ -5,6 +5,8 @@ from checks.cisco.n02_cisco import check_n02_cisco
 from checks.cisco.n03_cisco import check_n03_cisco
 from checks.cisco.n04_cisco import check_n04_cisco
 from checks.cisco.n05_cisco import check_n05_cisco
+from checks.cisco.n06_cisco import check_n06_cisco
+from checks.cisco.n07_cisco import check_n07_cisco
 from reporters.markdown_report import make_markdown_report
 
 
@@ -146,11 +148,77 @@ def main():
             print(f"- {setting}")
     else:
         print("- 없음")
+#---------------------------
+    result, found_settings, weak_setting, manual_settings = check_n06_cisco(config_text)
+    print("\n[N-06] VTY 접근(ACL) 설정")
+    print(f"점검 결과 {result}")
 
-        
+    print("\n확인된 설정")
+    if found_settings:
+        for setting in found_settings:
+            if setting.startswith("line "):
+                print(setting)
+            else:
+                print(f"- {setting}")
+    else:
+        print("- 없음")
+
+    print("\n미흡한 설정")
+    if weak_setting:
+        for setting in weak_setting:
+            print(f"- {setting}")
+    else:
+        print("- 없음")
+
+    print("\n미적용 ACL")
+    if manual_settings:
+        for setting in manual_settings:
+            if setting.startswith("미적용"):
+                print(setting)
+            else:
+                print(f"- {setting}")
+    else:
+        print("- 없음")
+
+#---------------------------
+    result, found_settings, weak_setting = check_n07_cisco(config_text)
+    print("\n[N-07] Session Timeout 설정")
+    print(f"점검 결과 {result}")
+
+    print("\n확인된 설정")
+    if found_settings:
+        for setting in found_settings:
+            if setting.startswith("line "):
+                print(setting)
+            else:
+                print(f"- {setting}")
+    else:
+        print("- 없음")
+
+    print("\n미흡한 설정")
+    if weak_setting:
+        for setting in weak_setting:
+            print(f"- {setting}")
+    else:
+        print("- 없음")
+
+
+
+
+
+
     # print("_____ running-config 시작_____")
     # print(config_text)
     # print("_____running-config 끝")
+
+
+
+
+
+
+
+
+
 #-----------------------
     checks = [
         ("N-01", "비밀번호 설정", check_n01_cisco),
@@ -158,6 +226,8 @@ def main():
         ("N-03", "암호화된 비밀번호 사용", check_n03_cisco),
         ("N-04", "계정 잠금 임계값 설정", check_n04_cisco),
         ("N-05", "사용자·명령어별 권한 수준 설정", check_n05_cisco),
+        ("N-06", "VTY 접근(ACL) 설정", check_n06_cisco),
+        ("N-07", "Session Timeout 설정", check_n07_cisco),
     ]
 
     check_results = []
@@ -169,7 +239,7 @@ def main():
 
     report_text = make_markdown_report(
         "네트워크 장비 점검 보고서",
-        "01. 계정 관리",
+        "현재 구현 항목: N-01 ~ N-07",
         check_results,
     )
 

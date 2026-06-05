@@ -24,6 +24,40 @@ def get_config_block(config_text, block_start):
     return block_lines
 
 
+def get_config_blocks(config_text, block_start):
+    # 같은 종류의 설정 블록이 여러 개 있을 때 모두 찾는다.
+    # 예: "line vty 0 4", "line vty 5 15"가 따로 있는 경우 둘 다 모은다.
+    lines = config_text.splitlines()
+    blocks = []
+    current_block = []
+    in_block = False
+
+    for line in lines:
+        stripped_line = line.strip()
+
+        if stripped_line.startswith(block_start):
+            if current_block:
+                blocks.append(current_block)
+
+            in_block = True
+            current_block = [stripped_line]
+            continue
+
+        if in_block:
+            if line and not line.startswith(" "):
+                blocks.append(current_block)
+                current_block = []
+                in_block = False
+                continue
+
+            current_block.append(stripped_line)
+
+    if current_block:
+        blocks.append(current_block)
+
+    return blocks
+
+
 def find_lines(config_text, keywords):
     # 전체 설정에서 특정 키워드로 시작하는 줄을 찾는다.
     # 예: "enable secret", "username" 같은 전역 설정을 찾을 때 사용한다.
@@ -89,18 +123,23 @@ def check_n01_cisco(config_text):
     console_auth_lines = find_auth_lines_in_block(console_block)
 
     if console_auth_lines:
-        found_settings.append("line console 0")
+        found_settings.append(console_block[0])
         found_settings.extend(console_auth_lines)
     else:
         weak_settings.append("console 패스워드 미설정")
 
-    # VTY는 Telnet/SSH 같은 원격 터미널 접속 구간이다.
-    vty_block = get_config_block(config_text, "line vty")
-    vty_auth_lines = find_auth_lines_in_block(vty_block)
+    # VTY는 Telnet/SSH 같은 원격 터미널 접속 구간이며, 여러 범위로 나뉠 수 있다.
+    vty_blocks = get_config_blocks(config_text, "line vty")
 
-    if vty_auth_lines:
-        found_settings.append("line vty 0 4")
-        found_settings.extend(vty_auth_lines)
+    if vty_blocks:
+        for vty_block in vty_blocks:
+            vty_auth_lines = find_auth_lines_in_block(vty_block)
+
+            if vty_auth_lines:
+                found_settings.append(vty_block[0])
+                found_settings.extend(vty_auth_lines)
+            else:
+                weak_settings.append(f"{vty_block[0]} 패스워드 미설정")
     else:
         weak_settings.append("vty 패스워드 미설정")
 
@@ -109,7 +148,7 @@ def check_n01_cisco(config_text):
     aux_auth_lines = find_auth_lines_in_block(aux_block)
 
     if aux_auth_lines:
-        found_settings.append("line aux 0")
+        found_settings.append(aux_block[0])
         found_settings.extend(aux_auth_lines)
     else:
         weak_settings.append("aux 패스워드 미설정")
