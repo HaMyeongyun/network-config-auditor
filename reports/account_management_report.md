@@ -1,6 +1,6 @@
 # 네트워크 장비 점검 보고서
 
-# 현재 구현 항목: N-01 ~ N-07
+# 현재 구현 항목: N-01 ~ N-11
 
 ### N-01 비밀번호 설정
 - 점검 결과: **취약**
@@ -149,3 +149,76 @@ line vty 0 4 Session Timeout 비활성화 설정: exec-timeout 0 0
 
 #### 수동확인 필요
 없음
+
+### N-08 VTY 접속 시 안전한 프로토콜 사용
+- 점검 결과: **취약**
+
+#### 확인된 설정
+```text
+ip ssh version 2
+ip ssh authentication-retries 5
+ip ssh time-out 60
+ip domain-name kisec.com
+line vty 0 4
+transport input ssh
+```
+
+#### 미흡한 설정
+```text
+line vty 5 14 transport input 설정 없음
+```
+
+#### 수동확인 필요
+없음
+
+### N-09 불필요한 보조 입출력 포트 사용 금지
+- 점검 결과: **수동확인**
+
+#### 확인된 설정
+```text
+line aux 0
+exec-timeout 0 1
+```
+
+#### 미흡한 설정
+없음
+
+#### 수동확인 필요
+```text
+line aux 0 차단 설정과 접속 허용 설정이 함께 존재
+password 7 082A455D0C1A544541
+login
+```
+
+### N-10 로그인 시 경고 메시지 설정
+- 점검 결과: **양호**
+
+#### 확인된 설정
+```text
+banner motd #
+kisec nonoonononono
+#
+```
+
+#### 미흡한 설정
+없음
+
+#### 수동확인 필요
+없음
+
+### N-11 원격 로그서버 사용
+- 점검 결과: **양호**
+
+#### 확인된 설정
+```text
+logging 192.168.3.1
+```
+
+#### 미흡한 설정
+없음
+
+#### 수동확인 필요
+```text
+logging userinfo
+logging trap debugging
+```

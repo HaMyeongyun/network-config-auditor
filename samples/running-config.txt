@@ -86,9 +86,6 @@ ip access-list extended sl_def_acl
 access-list 3 permit host 20.0.0.20
 access-list 3 deny any
 !
-banner login #
-login login
-#
 banner motd #
 kisec nonoonononono
 #
@@ -127,7 +124,6 @@ line vty 5 14
  exec-timeout 5 0
  password 7 082A455D0C1A544541
  login local
- transport input ssh
 !
 !
 !
