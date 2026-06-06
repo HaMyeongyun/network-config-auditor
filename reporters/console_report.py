@@ -14,7 +14,7 @@ def print_setting_list(title, settings):
 
 def print_check_result(check_result):
     print(f"\n[{check_result['code']}] {check_result['title']}")
-    print(f"점검 결과 {check_result['result']}")
+    print(f"점검 결과: {check_result['result']}")
 
     print_setting_list("확인된 설정", check_result["found"])
     print_setting_list("미흡한 설정", check_result["weak"])

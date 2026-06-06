@@ -11,6 +11,18 @@ from checks.cisco.n08_cisco import check_n08_cisco
 from checks.cisco.n09_cisco import check_n09_cisco
 from checks.cisco.n10_cisco import check_n10_cisco
 from checks.cisco.n11_cisco import check_n11_cisco
+from checks.cisco.n12_cisco import check_n12_cisco
+from checks.cisco.n13_cisco import check_n13_cisco
+from checks.cisco.n14_cisco import check_n14_cisco
+from checks.cisco.n15_cisco import check_n15_cisco
+from checks.cisco.n16_cisco import check_n16_cisco
+from checks.cisco.n17_cisco import check_n17_cisco
+from checks.cisco.n18_cisco import check_n18_cisco
+from checks.cisco.n19_cisco import check_n19_cisco
+from checks.cisco.n20_cisco import check_n20_cisco
+from checks.cisco.n21_cisco import check_n21_cisco
+from checks.cisco.n22_cisco import check_n22_cisco
+from checks.cisco.n23_cisco import check_n23_cisco
 
 from reporters.console_report import print_check_result
 from reporters.markdown_report import make_markdown_report
@@ -72,6 +84,18 @@ def main():
         ("N-09", "불필요한 보조 입출력 포트 사용 금지", check_n09_cisco),
         ("N-10", "로그인 시 경고 메시지 설정", check_n10_cisco),
         ("N-11", "원격 로그서버 사용", check_n11_cisco),
+        ("N-12", "주기적 보안 패치 및 벤더 권고사항 적용", check_n12_cisco),
+        ("N-13", "로깅 버퍼 크기 설정", check_n13_cisco),
+        ("N-14", "정책에 따른 로깅 설정", check_n14_cisco),
+        ("N-15", "NTP 및 시각 동기화 설정", check_n15_cisco),
+        ("N-16", "Timestamp 로그 설정", check_n16_cisco),
+        ("N-17", "SNMP 서비스 확인", check_n17_cisco),
+        ("N-18", "SNMP Community String 복잡성 설정", check_n18_cisco),
+        ("N-19", "SNMP ACL 설정", check_n19_cisco),
+        ("N-20", "SNMP Community 권한 설정", check_n20_cisco),
+        ("N-21", "TFTP 서비스 차단", check_n21_cisco),
+        ("N-22", "Spoofing 방지 필터링 적용", check_n22_cisco),
+        ("N-23", "DDoS 공격 방어 설정", check_n23_cisco),
     ]
 
     check_results = run_checks(config_text, checks)
@@ -81,7 +105,7 @@ def main():
 
     report_text = make_markdown_report(
         "네트워크 장비 점검 보고서",
-        "현재 구현 항목: N-01 ~ N-11",
+        "현재 구현 항목: N-01 ~ N-23",
         check_results,
     )
 
